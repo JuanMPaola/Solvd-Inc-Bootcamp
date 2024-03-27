@@ -12,6 +12,8 @@ Constraints:
 All input and output numbers will be positive integers.
 For subtraction, ensure that the first parameter is always greater than the second parameter.
 Division should only result in an integer value.
+
+.toLocaleString()
 */
 
 // String.plus(string): This function should take another string as input and return the result of adding the two together.
@@ -22,7 +24,7 @@ String.prototype.plus = function (string) {
 
 
     let result = parseInt(this) + parseInt(string);
-    return result.toString();
+    return result.toLocaleString();
 
 }
 
@@ -70,3 +72,20 @@ String.prototype.multiply = function (string) {
     return result.toString();
 
 }
+
+
+/* String.prototype.plus = function (string) {
+
+    if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be string-positive integers")
+
+
+    let result = parseInt(this) + parseInt(string);
+    return result.toLocaleString();
+
+} */
+
+let x = "456123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123"
+
+let y = x.plus("456123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123")
+
+console.log(y)
