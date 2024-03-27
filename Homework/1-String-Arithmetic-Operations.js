@@ -19,13 +19,26 @@ Division should only result in an integer value.
 // String.plus(string): This function should take another string as input and return the result of adding the two together.
 
 String.prototype.plus = function (string) {
+    if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be string-positive integers");
 
-    if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be string-positive integers")
+    const maxLength = Math.max(this.length, string.length);
+    const paddedThis = this.padStart(maxLength, '0');
+    const paddedString = string.padStart(maxLength, '0');
 
+    let carry = 0;
+    let result = '';
+    for (let i = maxLength - 1; i >= 0; i--) {
+        const digitSum = parseInt(paddedThis[i]) + parseInt(paddedString[i]) + carry;
+        const digit = digitSum % 10;
+        carry = Math.floor(digitSum / 10);
+        result = digit.toString() + result;
+    }
 
-    let result = parseInt(this) + parseInt(string);
-    return result.toLocaleString();
+    if (carry > 0) {
+        result = carry.toString() + result;
+    }
 
+    return result;
 }
 
 
