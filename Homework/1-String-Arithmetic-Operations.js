@@ -46,59 +46,64 @@ String.prototype.plus = function (string) {
 // Note that the first parameter will always be greater than the second parameter.
 
 String.prototype.minus = function (string) {
+    if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be string-positive integers");
+    
+    if (this < string) throw new Error("First string must be greater than or equal to the second string");
 
-    if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be positive string-positive integers")
+    const maxLength = Math.max(this.length, string.length);
+    const paddedThis = this.padStart(maxLength, '0');
+    const paddedString = string.padStart(maxLength, '0');
 
-    if (this < string) throw new Error("First string must be greater than the second string");
+    let borrow = 0;
+    let result = '';
+    for (let i = maxLength - 1; i >= 0; i--) {
+        let digitDifference = parseInt(paddedThis[i]) - parseInt(paddedString[i]) - borrow;
+        if (digitDifference < 0) {
+            digitDifference += 10;
+            borrow = 1;
+        } else {
+            borrow = 0;
+        }
+        result = digitDifference.toString() + result;
+    }
 
+    // Remove leading zeros
+    result = result.replace(/^0+/, '');
 
-    let result = parseInt(this) - parseInt(string);
-    return result.toString();
-
+    return result || '0';
 }
 
 // String.divide(string): This function should take another string as input and return the result of dividing the first string by the second string. Division should only result in an integer value.
 
 String.prototype.divide = function (string) {
+    if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be string-positive integers");
 
-    if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be string-positive integers")
+    if (string === '0') throw new Error("Division by zero is not allowed.");
 
+    let dividend = this;
+    let divisor = string;
+    let quotient = '0';
 
-    if (string == 0) throw new Error("Division by zero is not allowed.");
+    while (dividend >= divisor) {
+        dividend = dividend.minus(divisor);
+        quotient = quotient.plus('1');
+    }
 
-    let dividend = parseInt(this);
-    let divisor = parseInt(string);
-
-    let result = Math.floor(dividend / divisor);
-    return result.toString();
-
+    return quotient;
 }
 
 // String.multiply(string): This function should take another string as input and return the result of multiplying the two strings together.
 
 String.prototype.multiply = function (string) {
+    if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be string-positive integers");
 
-    if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be string-positive integers")
+    let product = '0';
+    let multiplier = this;
 
+    while (multiplier !== '0') {
+        product = product.plus(string);
+        multiplier = multiplier.minus('1');
+    }
 
-    let result = parseInt(this) * parseInt(string);
-    return result.toString();
-
+    return product;
 }
-
-
-/* String.prototype.plus = function (string) {
-
-    if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be string-positive integers")
-
-
-    let result = parseInt(this) + parseInt(string);
-    return result.toLocaleString();
-
-} */
-
-let x = "456123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123"
-
-let y = x.plus("456123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123")
-
-console.log(y)
