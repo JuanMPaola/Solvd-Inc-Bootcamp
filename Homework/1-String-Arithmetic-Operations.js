@@ -74,22 +74,31 @@ String.prototype.minus = function (string) {
 }
 
 // String.divide(string): This function should take another string as input and return the result of dividing the first string by the second string. Division should only result in an integer value.
-
 String.prototype.divide = function (string) {
     if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be string-positive integers");
 
     if (string === '0') throw new Error("Division by zero is not allowed.");
 
-    let dividend = this;
-    let divisor = string;
-    let quotient = '0';
+    const dividend = this;
+    const divisor = string;
 
-    while (dividend >= divisor) {
-        dividend = dividend.minus(divisor);
-        quotient = quotient.plus('1');
+    let quotient = '';
+    let remainder = '0';
+
+    for (let i = 0; i < dividend.length; i++) {
+        remainder += dividend[i];
+        let count = 0;
+        while (remainder >= divisor) {
+            remainder = remainder.minus(divisor);
+            count++;
+        }
+        quotient += count;
     }
 
-    return quotient;
+    // Remove leading zeros from quotient
+    quotient = quotient.replace(/^0+/, '');
+
+    return quotient || '0';
 }
 
 // String.multiply(string): This function should take another string as input and return the result of multiplying the two strings together.
@@ -97,13 +106,30 @@ String.prototype.divide = function (string) {
 String.prototype.multiply = function (string) {
     if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be string-positive integers");
 
-    let product = '0';
-    let multiplier = this;
+    const num1 = this.split('').map(Number).reverse();
+    const num2 = string.split('').map(Number).reverse();
 
-    while (multiplier !== '0') {
-        product = product.plus(string);
-        multiplier = multiplier.minus('1');
+    const result = new Array(num1.length + num2.length).fill(0);
+
+    for (let i = 0; i < num1.length; i++) {
+        for (let j = 0; j < num2.length; j++) {
+            result[i + j] += num1[i] * num2[j];
+            if (result[i + j] >= 10) {
+                result[i + j + 1] += Math.floor(result[i + j] / 10);
+                result[i + j] %= 10;
+            }
+        }
     }
 
-    return product;
+    while (result.length > 1 && result[result.length - 1] === 0) {
+        result.pop();
+    }
+
+    return result.reverse().join('');
 }
+
+let x = "100000000000000000000000"
+let y = "123"
+let z = x.divide(y);
+
+console.log(z); //Result is 0 when it must be 8130081300813008130
