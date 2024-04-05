@@ -73,32 +73,34 @@ String.prototype.minus = function (string) {
     return result || '0';
 }
 
-// String.divide(string): This function should take another string as input and return the result of dividing the first string by the second string. Division should only result in an integer value.
+// String.divide(string): This function should take another string as input and return the result of dividing the first string by the second string. 
+// Division should only result in an integer value.
+
 String.prototype.divide = function (string) {
     if (!/^\d+$/.test(this) || !/^\d+$/.test(string)) throw new Error("Inputs must be string-positive integers");
 
     if (string === '0') throw new Error("Division by zero is not allowed.");
 
     const dividend = this;
-    const divisor = string;
+    const divisor = parseInt(string, 10);
 
     let quotient = '';
-    let remainder = '0';
+    let remainder = 0;
 
     for (let i = 0; i < dividend.length; i++) {
-        remainder += dividend[i];
+        remainder = remainder * 10 + parseInt(dividend[i], 10);
         let count = 0;
         while (remainder >= divisor) {
-            remainder = remainder.minus(divisor);
+            remainder -= divisor;
             count++;
         }
-        quotient += count;
+        quotient += count.toString();
     }
 
     // Remove leading zeros from quotient
     quotient = quotient.replace(/^0+/, '');
 
-    return quotient || '0';
+    return quotient;
 }
 
 // String.multiply(string): This function should take another string as input and return the result of multiplying the two strings together.
@@ -127,9 +129,3 @@ String.prototype.multiply = function (string) {
 
     return result.reverse().join('');
 }
-
-let x = "100000000000000000000000"
-let y = "123"
-let z = x.divide(y);
-
-console.log(z); //Result is 0 when it must be 8130081300813008130
