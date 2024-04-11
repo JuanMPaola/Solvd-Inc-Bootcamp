@@ -36,23 +36,56 @@ RegExp: Represents a regular expression.
 
 
 
-const stringifyValue = (arg) =>
-{
-    let type = typeof arg;
-    if (type === "string") return arg;
-    if (type === "bigint" || type === "number" || type === "undefined" || type === "boolean" || type === "symbol") return arg.toString();
-    else return JSON.stringify(arg);
-}
+const stringifyValue = (arg) => {
+  let type = typeof arg;
+  if (type === "string") return arg;
+  if (type === "bigint" || type === "number" || type === "undefined" || type === "boolean" || type === "symbol") return arg.toString();
+  else return JSON.stringify(arg);
+};
 
-const invertBoolean = (arg) => 
-{
-   if (typeof arg != "boolean") throw new Error("Input must be a boolean");
-   return !arg
-}
+const invertBoolean = (arg) => {
+  if (typeof arg != "boolean") throw new Error("Input must be a boolean");
+  return !arg
+};
 
-const convertToNumber = (arg) =>
-{
-  if(isNaN(Number(arg))) throw new Error ("It is not possible to convert the input into a number");
+const convertToNumber = (arg) => {
+  if (isNaN(Number(arg))) throw new Error("It is not possible to convert the input into a number");
   return Number(arg)
-}
+};
+
+const coerceToType = (value, type) => {
+  switch (type) {
+    case 'Number':
+      return convertToNumber(value);
+    case 'String':
+      return stringifyValue(value);
+    case 'Boolean':
+      return Boolean(value);
+    case 'Null':
+      return null;
+    case 'Undefined':
+      return undefined;
+    case 'Symbol':
+      return Symbol(value);
+    case 'Object':
+      if (value !== null && typeof value === 'object') return Object(value);
+    case 'Array':
+      if (Array.isArray(value)) return value;
+      return Array.from(value);
+    case 'Function':
+      if (typeof value === 'function') return value;
+      break
+    case 'Date':
+      if (typeof value === 'string') {
+        const parsedDate = new Date(value);
+        if (!isNaN(parsedDate.getTime())) return parsedDate;
+      }
+      break;
+    case 'RegExp':
+      if (typeof value === 'string') return new RegExp(value);
+      break;
+    default:
+      throw new Error('Unsupported type');
+  }
+};
 
