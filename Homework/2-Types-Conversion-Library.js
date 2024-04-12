@@ -34,12 +34,131 @@ Date: Represents a date and time.
 RegExp: Represents a regular expression.
 */
 
+function addValues(a, b) {
+  switch (typeof a) {
+    case ("number"):
+
+      switch (typeof b) {
+        case 'number':
+          return a + b;
+        case 'bigint':
+          return BigInt(a) + b;
+        case 'boolean':
+          return a + Number(b);
+        case 'function':
+          throw new Error('Cannot add a number to a function');
+        case 'string':
+          return String(a) + b;
+        case 'symbol':
+          throw new Error('Cannot add a number to a symbol');
+        case 'undefined':
+          throw new Error('Cannot add a number to undefined');
+        default:
+          throw new Error('Unsupported type');
+      }
+
+    case ("string"):
+      switch (typeof b) {
+        case 'number':
+          return a + String(b);
+        case 'bigint':
+          return a + String(b);
+        case 'boolean':
+          return a + String(b);
+        case 'function':
+          throw new Error('Cannot add a string to a function');
+        case 'string':
+          return a + b;
+        case 'symbol':
+          throw new Error('Cannot add a string to a symbol');
+        case 'undefined':
+          throw new Error('Cannot add a string to undefined');
+        default:
+          throw new Error('Unsupported type');
+      }
+
+    case ("boolean"):
+      switch (typeof b) {
+        case 'number':
+          return Number(a) + b;
+        case 'bigint':
+          return BigInt(Number(a)) + b;
+        case 'boolean':
+          return Number(a) + Number(b);
+        case 'function':
+          throw new Error('Cannot add a boolean to a function');
+        case 'string':
+          return String(a) + b;
+        case 'symbol':
+          throw new Error('Cannot add a boolean to a symbol');
+        case 'undefined':
+          throw new Error('Cannot add a boolean to undefined');
+        default:
+          throw new Error('Unsupported type');
+      }
+    case ("bigint"):
+      switch (typeof b) {
+        case 'number':
+          return BigInt(a) + BigInt(b);
+        case 'bigint':
+          return a + b;
+        case 'boolean':
+          return a + Number(b);
+        case 'function':
+          throw new Error('Cannot add a bigint to a function');
+        case 'string':
+          return String(a) + b;
+        case 'symbol':
+          throw new Error('Cannot add a bigint to a symbol');
+        case 'undefined':
+          throw new Error('Cannot add a bigint to undefined');
+        default:
+          throw new Error('Unsupported type');
+      }
+    case ("undefined"):
+      switch (typeof b) {
+        case 'number':
+          return Number(a) + b;
+        case 'bigint':
+          return BigInt(Number(a)) + b;
+        case 'boolean':
+          return Number(a) + Number(b);
+        case 'function':
+          throw new Error('Cannot add undefined to a function');
+        case 'string':
+          return String(a) + b;
+        case 'symbol':
+          throw new Error('Cannot add undefined to a symbol');
+        case 'undefined':
+          return Number(a) + Number(b);
+        case 'object':
+          if (b === null) {
+            return Number(a);
+          }
+        default:
+          throw new Error('Unsupported type');
+      }
+
+    case ("object"):
+      throw new Error('Cannot add an object to another type');
+
+    case ("function"):
+      throw new Error('Cannot perform addition involving a function');
+
+    case ("symbol"):
+      throw new Error('Cannot perform addition involving a symbol');
+
+    default:
+      return new Error("Error")
+  }
+}
 
 
 const stringifyValue = (arg) => {
   let type = typeof arg;
   if (type === "string") return arg;
-  if (type === "bigint" || type === "number" || type === "undefined" || type === "boolean" || type === "symbol") return arg.toString();
+  if (type === "undefined") return "undefined";
+  if (type === "bigint" || type === "number" || type === "boolean" || type === "symbol") return arg.toString();
   else return JSON.stringify(arg);
 };
 
@@ -49,33 +168,40 @@ const invertBoolean = (arg) => {
 };
 
 const convertToNumber = (arg) => {
-  if (isNaN(Number(arg))) throw new Error("It is not possible to convert the input into a number");
-  return Number(arg)
+  if (Array.isArray(arg)) {
+    throw new Error("Arrays cannot be converted to numbers");
+  }
+
+  if (isNaN(Number(arg))) {
+    throw new Error("It is not possible to convert the input into a number");
+  }
+
+  return Number(arg);
 };
 
 const coerceToType = (value, type) => {
   switch (type) {
-    case 'Number':
+    case 'number':
       return convertToNumber(value);
-    case 'String':
+    case 'string':
       return stringifyValue(value);
-    case 'Boolean':
+    case 'boolean':
       return Boolean(value);
-    case 'Null':
+    case 'null':
       return null;
-    case 'Undefined':
+    case 'undefined':
       return undefined;
-    case 'Symbol':
+    case 'symbol':
       return Symbol(value);
-    case 'Object':
+    case 'object':
       if (value !== null && typeof value === 'object') return Object(value);
-    case 'Array':
+    case 'array':
       if (Array.isArray(value)) return value;
       return Array.from(value);
-    case 'Function':
+    case 'function':
       if (typeof value === 'function') return value;
       break
-    case 'Date':
+    case 'date':
       if (typeof value === 'string') {
         const parsedDate = new Date(value);
         if (!isNaN(parsedDate.getTime())) return parsedDate;
@@ -85,7 +211,14 @@ const coerceToType = (value, type) => {
       if (typeof value === 'string') return new RegExp(value);
       break;
     default:
-      throw new Error('Unsupported type');
+      throw new Error('Unsupported type or impossible coerce');
   }
 };
 
+module.exports = {
+  addValues,
+  stringifyValue,
+  invertBoolean,
+  convertToNumber,
+  coerceToType
+}
