@@ -36,123 +36,34 @@ RegExp: Represents a regular expression.
 
 function addValues(a, b) {
   switch (typeof a) {
-    case ("number"):
+    case "number":
+      if (typeof b === "number") return a + b;
+      if (typeof b === "bigint") return BigInt(a) + b;
+      if (typeof b === "boolean") return a + Number(b);
+      break;
 
-      switch (typeof b) {
-        case 'number':
-          return a + b;
-        case 'bigint':
-          return BigInt(a) + b;
-        case 'boolean':
-          return a + Number(b);
-        case 'function':
-          throw new Error('Cannot add a number to a function');
-        case 'string':
-          return String(a) + b;
-        case 'symbol':
-          throw new Error('Cannot add a number to a symbol');
-        case 'undefined':
-          throw new Error('Cannot add a number to undefined');
-        default:
-          throw new Error('Unsupported type');
-      }
+    case "string":
+      if (typeof b === "string") return a + b;
+      break;
 
-    case ("string"):
-      switch (typeof b) {
-        case 'number':
-          return a + String(b);
-        case 'bigint':
-          return a + String(b);
-        case 'boolean':
-          return a + String(b);
-        case 'function':
-          throw new Error('Cannot add a string to a function');
-        case 'string':
-          return a + b;
-        case 'symbol':
-          throw new Error('Cannot add a string to a symbol');
-        case 'undefined':
-          throw new Error('Cannot add a string to undefined');
-        default:
-          throw new Error('Unsupported type');
-      }
+    case "boolean":
+      if (typeof b === "number") return a || b;
+      break;
 
-    case ("boolean"):
-      switch (typeof b) {
-        case 'number':
-          return Number(a) + b;
-        case 'bigint':
-          return BigInt(Number(a)) + b;
-        case 'boolean':
-          return Number(a) + Number(b);
-        case 'function':
-          throw new Error('Cannot add a boolean to a function');
-        case 'string':
-          return String(a) + b;
-        case 'symbol':
-          throw new Error('Cannot add a boolean to a symbol');
-        case 'undefined':
-          throw new Error('Cannot add a boolean to undefined');
-        default:
-          throw new Error('Unsupported type');
-      }
-    case ("bigint"):
-      switch (typeof b) {
-        case 'number':
-          return BigInt(a) + BigInt(b);
-        case 'bigint':
-          return a + b;
-        case 'boolean':
-          return a + Number(b);
-        case 'function':
-          throw new Error('Cannot add a bigint to a function');
-        case 'string':
-          return String(a) + b;
-        case 'symbol':
-          throw new Error('Cannot add a bigint to a symbol');
-        case 'undefined':
-          throw new Error('Cannot add a bigint to undefined');
-        default:
-          throw new Error('Unsupported type');
-      }
-    case ("undefined"):
-      switch (typeof b) {
-        case 'number':
-          return Number(a) + b;
-        case 'bigint':
-          return BigInt(Number(a)) + b;
-        case 'boolean':
-          return Number(a) + Number(b);
-        case 'function':
-          throw new Error('Cannot add undefined to a function');
-        case 'string':
-          return String(a) + b;
-        case 'symbol':
-          throw new Error('Cannot add undefined to a symbol');
-        case 'undefined':
-          return Number(a) + Number(b);
-        case 'object':
-          if (b === null) {
-            return Number(a);
-          }
-        default:
-          throw new Error('Unsupported type');
-      }
+    case "bigint":
+      if (typeof b === "number") return BigInt(a) + BigInt(b);
+      if (typeof b === "bigint") return a + b;
+      if (typeof b === "boolean") return a + Number(b);
+      break;
 
-    case ("object"):
-      throw new Error('Cannot add an object to another type');
-
-    case ("function"):
-      throw new Error('Cannot perform addition involving a function');
-
-    case ("symbol"):
-      throw new Error('Cannot perform addition involving a symbol');
-
+    case "undefined":
+      if (typeof b === "number") return Number(a) + b;
+      if (typeof b === "bigint") return BigInt(Number(a)) + b;
     default:
-      return new Error("Error")
+      throw new Error("Unsupported type");
   }
-}
-
+  throw new Error("Cannot perform addition");
+};
 
 const stringifyValue = (arg) => {
   let type = typeof arg;
@@ -183,33 +94,49 @@ const coerceToType = (value, type) => {
   switch (type) {
     case 'number':
       return convertToNumber(value);
+
     case 'string':
       return stringifyValue(value);
+
     case 'boolean':
       return Boolean(value);
+
     case 'null':
       return null;
+
     case 'undefined':
       return undefined;
+
     case 'symbol':
       return Symbol(value);
+
     case 'object':
-      if (value !== null && typeof value === 'object') return Object(value);
+      if (value !== null && typeof value === 'string') {
+        return JSON.parse(value);
+      } else if (value !== null && typeof value === 'object') {
+        return Object(value);
+      }
+      break;
+
     case 'array':
       if (Array.isArray(value)) return value;
       return Array.from(value);
+
     case 'function':
       if (typeof value === 'function') return value;
-      break
+      break;
+
     case 'date':
       if (typeof value === 'string') {
         const parsedDate = new Date(value);
         if (!isNaN(parsedDate.getTime())) return parsedDate;
       }
       break;
+
     case 'RegExp':
       if (typeof value === 'string') return new RegExp(value);
       break;
+
     default:
       throw new Error('Unsupported type or impossible coerce');
   }
