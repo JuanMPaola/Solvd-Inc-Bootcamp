@@ -47,7 +47,7 @@ function addValues(a, b) {
       break;
 
     case "boolean":
-      if (typeof b === "number") return a || b;
+      if (typeof b === "boolean") return a || b;
       break;
 
     case "bigint":
