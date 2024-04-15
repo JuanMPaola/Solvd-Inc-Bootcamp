@@ -39,7 +39,6 @@ function addValues(a, b) {
     case "number":
       if (typeof b === "number") return a + b;
       if (typeof b === "bigint") return BigInt(a) + b;
-      if (typeof b === "boolean") return a + Number(b);
       break;
 
     case "string":
@@ -53,7 +52,6 @@ function addValues(a, b) {
     case "bigint":
       if (typeof b === "number") return BigInt(a) + BigInt(b);
       if (typeof b === "bigint") return a + b;
-      if (typeof b === "boolean") return a + Number(b);
       break;
 
     case "undefined":
