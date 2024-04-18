@@ -12,16 +12,14 @@ const calculateDiscountedPrice = (products, discount) => {
     return products.map((product) => product.price - (product.price * (discount / 100)))
 }
 const calculateTotalPrice = (products) => {
-    let totalPrice;
-    products.map((product) => totalPrice += product.price)
-    return totalPrice;
+    return products.map((product) => product.price).reduce((accumulator, currentValue)=> accumulator + currentValue, 0)
 }
 
 /*Task 2: Function Composition and Point-Free Style
 Implement a function called getFullName that takes a person object with firstName and lastName properties. 
 The function should return the person's full name in the format "FirstName LastName".
 
-Create a function called filterUniqueWords that takes a string of text and returns an array of unique words, sorted in alphabetical order, without using explicit loops. 
+>Create a function called filterUniqueWords that takes a string of text and returns an array of unique words, sorted in alphabetical order, without using explicit loops. 
 Use function composition and point-free style.
 
 Implement a function called getAverageGrade that takes an array of student objects, each containing a name and grades property. 
@@ -39,7 +37,7 @@ const filterUniqueWords = (text) => {
 }
 
 const getAverageGrade = (students) => {
-    return students.map((student) => student.grade).reduce((accumulator, currentValue)=> accumulator + currentValue, 0) / students.length
+    return students.map((student) => student.grades.reduce((accumulator, currentValue)=> accumulator + currentValue, 0) / student.grades.length).reduce((accumulator, currentValue)=> accumulator + currentValue, 0) / students.length
 }
 
 
@@ -62,13 +60,21 @@ const createCounter = () =>{
 }
 
 const repeatFunction = (funct, number) => {
-    
-    for(let i; i < number ;i++){
+    if (number >= 0) {
         return () => {
-            funct()
-        }
+            for (let i = 0; i < number; i++) {
+                funct();
+            }
+        };
+    } else {
+        return () => {
+            while (true) {
+                funct();
+            }
+        };
     }
-}
+};
+
 
 /*Task 4: Recursion and Tail Call Optimization
 Implement a recursive function called calculateFactorial that calculates the factorial of a given number. 
@@ -84,3 +90,14 @@ The function should return a lazy generator that applies the mapping function to
 a time.
 Create a lazy generator function called fibonacciGenerator that generates Fibonacci numbers one at a time using 
 lazy evaluation.*/
+
+const students = [
+    { name: 'Alice', grades: [80, 90, 85] },
+    { name: 'Bob', grades: [70, 85, 75] },
+    { name: 'Charlie', grades: [90, 95, 88] }
+  ];
+  
+  
+let resutl = getAverageGrade(students);
+console.log(resutl); // Output: 2
+
