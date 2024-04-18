@@ -91,13 +91,4 @@ a time.
 Create a lazy generator function called fibonacciGenerator that generates Fibonacci numbers one at a time using 
 lazy evaluation.*/
 
-const students = [
-    { name: 'Alice', grades: [80, 90, 85] },
-    { name: 'Bob', grades: [70, 85, 75] },
-    { name: 'Charlie', grades: [90, 95, 88] }
-  ];
-  
-  
-let resutl = getAverageGrade(students);
-console.log(resutl); // Output: 2
 
