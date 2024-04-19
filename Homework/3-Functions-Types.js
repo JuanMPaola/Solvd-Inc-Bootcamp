@@ -9,37 +9,54 @@ Create a pure function called calculateTotalPrice that takes an array of product
 The function should return the total price of all products, without modifying the original array or its items.*/
 
 const calculateDiscountedPrice = (products, discount) => {
-    return products.map((product) => product.price - (product.price * (discount / 100)))
+    let discounted = products;
+    return discounted.map((product) => product.price - (product.price * (discount / 100)))
 }
 const calculateTotalPrice = (products) => {
-    return products.map((product) => product.price).reduce((accumulator, currentValue)=> accumulator + currentValue, 0)
+    return products
+        .map((product) => product.price)
+        .reduce((accumulator, currentValue)=> accumulator + currentValue, 0)
 }
 
 /*Task 2: Function Composition and Point-Free Style
-Implement a function called getFullName that takes a person object with firstName and lastName properties. 
+>Implement a function called getFullName that takes a person object with firstName and lastName properties. 
 The function should return the person's full name in the format "FirstName LastName".
 
 >Create a function called filterUniqueWords that takes a string of text and returns an array of unique words, sorted in alphabetical order, without using explicit loops. 
 Use function composition and point-free style.
 
-Implement a function called getAverageGrade that takes an array of student objects, each containing a name and grades property. 
+>Implement a function called getAverageGrade that takes an array of student objects, each containing a name and grades property. 
 The function should return the average grade of all students, without modifying the original array or its items. 
 Use function composition and point-free style.*/
 
 const fullname = (str1, str2) => str1 + " " + str2;
-
 const getFullName = (person) => {
+    
+    if (!('firstName' in person) || !('lastName' in person)) throw new Error("Person object is missing firstName or lastName properties");
+    
+    if (!person || typeof person !== 'object') throw new Error("Invalid argument: person must be an object");
+
+    if (typeof person.firstName !== 'string' || typeof person.lastName !== 'string') throw new Error("firstName and lastName must be strings");
+
     return fullname(person.firstName, person.lastName);
+};
+
+const splitWords = text => text.split(/\s+/);
+const sortAlphabetically = words => words.sort();
+const filterUniqueWords = text => compose(sortAlphabetically, splitWords)(text);
+function compose(...functions) {
+    return function(arg) {
+        return functions.reduceRight((result, fn) => fn(result), arg);
+    };
 }
 
-const filterUniqueWords = (text) => {
-    return text.split(" ").sort()
-}
 
 const getAverageGrade = (students) => {
-    return students.map((student) => student.grades.reduce((accumulator, currentValue)=> accumulator + currentValue, 0) / student.grades.length).reduce((accumulator, currentValue)=> accumulator + currentValue, 0) / students.length
+    return students.map(
+        (student) => student.grades.reduce(
+            (accumulator, currentValue)=> accumulator + currentValue, 0) / student.grades.length)
+            .reduce((accumulator, currentValue)=> accumulator + currentValue, 0) / students.length
 }
-
 
 /*Task 3: Closures and Higher-Order Functions
 Create a function called createCounter that returns a closure. The closure should be a counter function that 
@@ -82,7 +99,21 @@ Optimize the function to use tail call optimization to avoid stack overflow for 
 Create a recursive function called power that takes a base and an exponent as arguments. 
 The function should calculate the power of the base to the exponent using recursion.*/
 
-const calculateFactorial = (number) => {}
+const calculateFactorial = (number) => {
+    if (number <= 0) return new Error("Number must be 1 or higher")
+
+    if(number === 1 ) return 1
+
+    return number * calculateFactorial(number-1)
+}
+
+const power = (base, exponent) => {
+    if (exponent === 0) return 1
+
+    if(exponent >0) return base * power(base, exponent-1)
+    
+    if (exponent < 0) return 1 / power(base, -exponent);
+}
 
 /*Task 5: Lazy Evaluation and Generators (*do not use yield)
 Implement a lazy evaluation function called lazyMap that takes an array and a mapping function. 
@@ -91,4 +122,45 @@ a time.
 Create a lazy generator function called fibonacciGenerator that generates Fibonacci numbers one at a time using 
 lazy evaluation.*/
 
+const lazyMap = (array, mapFunction) => {
+    let index = 0;
 
+    return {
+        next: function() {
+            if (index < array.length) {
+                return { value: mapFunction(array[index++]), done: false };
+            } else {
+                return { done: true };
+            }
+        },
+        [Symbol.iterator]: function() {
+            return this;
+        }
+    };
+};
+
+const fibonacciGenerator = () => {
+    let a = 0;
+    let b = 1;
+    
+    return {
+        next: function() {
+            const nextValue = a;
+            const temp = a + b;
+            a = b;
+            b = temp;
+            return { value: nextValue, done: false };
+        },
+        [Symbol.iterator]: function() {
+            return this;
+        }
+    };
+};
+
+const students = [
+    { name: 'Alice', grades: [85, 90, 88] },
+    { name: 'Bob', grades: [75, 82, 79] },
+    { name: 'Charlie', grades: [92, 88, 94] },
+    { name: 'David', grades: [78, 85, 80] },
+    { name: 'Eva', grades: [90, 91, 89] }
+];
