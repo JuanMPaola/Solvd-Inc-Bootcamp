@@ -157,10 +157,3 @@ const fibonacciGenerator = () => {
     };
 };
 
-const students = [
-    { name: 'Alice', grades: [85, 90, 88] },
-    { name: 'Bob', grades: [75, 82, 79] },
-    { name: 'Charlie', grades: [92, 88, 94] },
-    { name: 'David', grades: [78, 85, 80] },
-    { name: 'Eva', grades: [90, 91, 89] }
-];
