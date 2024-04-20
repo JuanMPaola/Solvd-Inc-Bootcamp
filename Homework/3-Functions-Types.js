@@ -41,21 +41,17 @@ const getFullName = (person) => {
     return fullname(person.firstName, person.lastName);
 };
 
-const splitWords = text => text.split(/\s+/);
-const sortAlphabetically = words => words.sort();
-const filterUniqueWords = text => compose(sortAlphabetically, splitWords)(text);
-function compose(...functions) {
-    return function(arg) {
-        return functions.reduceRight((result, fn) => fn(result), arg);
-    };
-}
+
+const splitWords = (text) => text.split(/\s+/);
+const filterUnique = (words) => [...new Set(words)];
+const sortAlphabetically = (words) => words.sort();
+const filterUniqueWords = (text) => sortAlphabetically(filterUnique(splitWords(text)));
 
 
-const getAverageGrade = (students) => {
-    return students.map(
-        (student) => student.grades.reduce(
-            (accumulator, currentValue)=> accumulator + currentValue, 0) / student.grades.length)
-            .reduce((accumulator, currentValue)=> accumulator + currentValue, 0) / students.length
+const arrayAvarage = (array) => array.reduce((accumulator, currentValue)=> accumulator + currentValue, 0) / array.length
+const mapGrades = (students) => students.map((student)=> arrayAvarage(student.grades))
+const getAvarageGrade = (students) => {
+   return arrayAvarage(mapGrades(students))
 }
 
 /*Task 3: Closures and Higher-Order Functions
@@ -156,4 +152,3 @@ const fibonacciGenerator = () => {
         }
     };
 };
-
