@@ -9,9 +9,14 @@ Create a pure function called calculateTotalPrice that takes an array of product
 The function should return the total price of all products, without modifying the original array or its items.*/
 
 const calculateDiscountedPrice = (products, discount) => {
-    let discounted = products;
-    return discounted.map((product) => product.price - (product.price * (discount / 100)))
-}
+    let discounted = products.map(product => ({ ...product }));
+    
+    return discounted.map(product => {
+        product.price -= product.price * (discount / 100);
+        return product;
+    });
+};
+
 const calculateTotalPrice = (products) => {
     return products
         .map((product) => product.price)
@@ -19,13 +24,13 @@ const calculateTotalPrice = (products) => {
 }
 
 /*Task 2: Function Composition and Point-Free Style
->Implement a function called getFullName that takes a person object with firstName and lastName properties. 
+Implement a function called getFullName that takes a person object with firstName and lastName properties. 
 The function should return the person's full name in the format "FirstName LastName".
 
->Create a function called filterUniqueWords that takes a string of text and returns an array of unique words, sorted in alphabetical order, without using explicit loops. 
+Create a function called filterUniqueWords that takes a string of text and returns an array of unique words, sorted in alphabetical order, without using explicit loops. 
 Use function composition and point-free style.
 
->Implement a function called getAverageGrade that takes an array of student objects, each containing a name and grades property. 
+Implement a function called getAverageGrade that takes an array of student objects, each containing a name and grades property. 
 The function should return the average grade of all students, without modifying the original array or its items. 
 Use function composition and point-free style.*/
 
@@ -44,7 +49,13 @@ const getFullName = (person) => {
 
 const splitWords = (text) => text.split(/\s+/);
 const filterUnique = (words) => [...new Set(words)];
-const sortAlphabetically = (words) => words.sort();
+const sortAlphabetically = (words) => words.sort((a, b) => {
+    const lowerA = a.toLowerCase();
+    const lowerB = b.toLowerCase();
+    if (lowerA < lowerB) return -1;
+    if (lowerA > lowerB) return 1;
+    return a.localeCompare(b);
+});
 const filterUniqueWords = (text) => sortAlphabetically(filterUnique(splitWords(text)));
 
 
