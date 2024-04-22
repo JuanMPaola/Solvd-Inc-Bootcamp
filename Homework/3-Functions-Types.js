@@ -46,17 +46,15 @@ const getFullName = (person) => {
     return fullname(person.firstName, person.lastName);
 };
 
-
+const toLowerCase = (text) => text.toLowerCase();
 const splitWords = (text) => text.split(/\s+/);
 const filterUnique = (words) => [...new Set(words)];
 const sortAlphabetically = (words) => words.sort((a, b) => {
-    const lowerA = a.toLowerCase();
-    const lowerB = b.toLowerCase();
-    if (lowerA < lowerB) return -1;
-    if (lowerA > lowerB) return 1;
+    if (a < b) return -1;
+    if (a > b) return 1;
     return a.localeCompare(b);
 });
-const filterUniqueWords = (text) => sortAlphabetically(filterUnique(splitWords(text)));
+const filterUniqueWords = (text) => sortAlphabetically(filterUnique(splitWords(toLowerCase(text))));
 
 
 const arrayAvarage = (array) => array.reduce((accumulator, currentValue)=> accumulator + currentValue, 0) / array.length
