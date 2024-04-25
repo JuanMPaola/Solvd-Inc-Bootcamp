@@ -151,7 +151,7 @@ bankAccount = {
         if (this._balance < amount) throw new Error("Balance is not enough");
         if (typeof amount !== "number") throw new Error("Amount must be a number");
         if (!otherBankAccount.hasOwnProperty("_balance")) throw new Error("The object input is not a bank account");
-    
+
         this._balance -= amount;
         let newBalance = otherBankAccount.getBalance + amount;
         otherBankAccount.balance = newBalance;
@@ -159,7 +159,7 @@ bankAccount = {
 }
 
 
-/*Task 4: Advanced Property Descriptors
+/*>Task 4: Advanced Property Descriptors
 Implement a function called createImmutableObject that takes an object as an argument and returns a new object with all its properties made read-only and non-writable using property descriptors. 
 The function should handle nested objects and arrays recursively.
 
@@ -170,30 +170,23 @@ const createImmutableObject = (obj) => {
     const immutableObj = {};
 
     for (const prop in obj) {
-        Object.defineProperty(immutableObj, prop, {
-            value: obj[prop],
-            writable: false,
-            configurable: false
-        })
-    };
-    return immutableObj;
-}
-
-/* 
-const createImmutableObject = (obj) => {
-    const immutableObj = {};
-
-    for (const prop in obj) {
         if (typeof obj[prop] === 'object' && obj[prop] !== null) {
             if (Array.isArray(obj[prop])) {
-                // If the property is an array, recursively create an immutable array
-                immutableObj[prop] = Object.freeze(createImmutableArray(obj[prop]));
+                const array = createImmutableArray(obj[prop]);
+                Object.defineProperty(immutableObj, prop, {
+                    value: array,
+                    writable: false,
+                    configurable: false
+                });
             } else {
-                // If the property is an object, recursively create an immutable object
-                immutableObj[prop] = createImmutableObject(obj[prop]);
+                const nestedImmutableObj = createImmutableObject(obj[prop]);
+                Object.defineProperty(immutableObj, prop, {
+                    value: nestedImmutableObj,
+                    writable: false,
+                    configurable: false
+                });
             }
         } else {
-            // If the property is neither an object nor an array, define it as read-only
             Object.defineProperty(immutableObj, prop, {
                 value: obj[prop],
                 writable: false,
@@ -204,26 +197,24 @@ const createImmutableObject = (obj) => {
 
     return immutableObj;
 };
-
 const createImmutableArray = (arr) => {
     const immutableArr = arr.map((item) => {
         if (typeof item === 'object' && item !== null) {
             if (Array.isArray(item)) {
-                // If the item is an array, recursively create an immutable array
-                return Object.freeze(createImmutableArray(item));
+                return createImmutableArray(item);
             } else {
-                // If the item is an object, recursively create an immutable object
                 return createImmutableObject(item);
             }
         } else {
-            // If the item is neither an object nor an array, return it as is
             return item;
         }
     });
 
-    return Object.freeze(immutableArr);
+    return immutableArr;
 };
-*/
+
+const immutablePerson = createImmutableObject(person);
+
 
 /*Task 5: Object Observation
 Implement a function called observeObject that takes an object and a callback function as arguments. 
@@ -249,24 +240,58 @@ const observeObject = (obj, cb) => {
     });
 };
 
-const cbFunction = (action, propName) =>{
+const cbFunction = (action, propName) => {
     console.log(`The action was ${action}, for ${propName} property`)
 }
 const proxiedObj = observeObject(person, cbFunction);
 
-//proxiedObj.firstName;
 proxiedObj.fitstName = "Juan";
 console.log(proxiedObj.fitstName);
 
-/*Task 6: Object Deep Cloning
+/*>Task 6: Object Deep Cloning
 Implement a function called deepCloneObject that takes an object as an argument and returns a deep copy of the object. 
-The function should handle circular references and complex nested structures. Do not use JSON methods.
+The function should handle circular references and complex nested structures. Do not use JSON methods.*/
+
+const deepCloneObject = (obj, clones = []) => {
+    if (typeof obj !== "object" || obj === null) return obj;
+
+    const foundIndex = clones.findIndex((item) => item.original === obj);
+    if (foundIndex !== -1) {
+        return clones[foundIndex].clone;
+    }
+
+    const clone = Array.isArray(obj) ? [] : {};
+
+    clones.push({ original: obj, clone });
+
+    for (const key in obj) {
+        clone[key] = deepCloneObject(obj[key], clones);
+    }
+
+    return clone;
+};
+
+const inputObject = {
+    name: "John",
+    age: 30,
+    address: {
+        city: "New York",
+        postalCode: "10001"
+    },
+    hobbies: ["reading", "cooking", "traveling"],
+    friends: [
+        { name: "Alice", age: 28 },
+        { name: "Bob", age: 32 }
+    ]
+};
+
+inputObject.self = inputObject;
+const clonedObject = deepCloneObject(inputObject);
+
+console.log(clonedObject);
 
 
-
-
-
-Task 7: Object Property Validation
+/*Task 7: Object Property Validation
 Implement a function called validateObject that takes an object and a validation schema as arguments. 
 The schema should define the required properties, their types, and any additional validation rules. 
 The function should return true if the object matches the schema, and false otherwise. 
