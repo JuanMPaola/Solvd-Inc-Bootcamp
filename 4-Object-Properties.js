@@ -248,7 +248,7 @@ const proxiedObj = observeObject(person, cbFunction);
 proxiedObj.fitstName = "Juan";
 console.log(proxiedObj.fitstName);
 
-/*>Task 6: Object Deep Cloning
+/*Task 6: Object Deep Cloning
 Implement a function called deepCloneObject that takes an object as an argument and returns a deep copy of the object. 
 The function should handle circular references and complex nested structures. Do not use JSON methods.*/
 
@@ -284,12 +284,6 @@ const inputObject = {
         { name: "Bob", age: 32 }
     ]
 };
-
-inputObject.self = inputObject;
-const clonedObject = deepCloneObject(inputObject);
-
-console.log(clonedObject);
-
 
 /*Task 7: Object Property Validation
 Implement a function called validateObject that takes an object and a validation schema as arguments. 
