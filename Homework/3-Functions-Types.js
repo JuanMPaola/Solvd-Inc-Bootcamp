@@ -161,3 +161,11 @@ const fibonacciGenerator = () => {
         }
     };
 };
+
+module.exports = {
+    task1: {calculateDiscountedPrice, calculateTotalPrice},
+    task2: {getFullName, filterUniqueWords, getAvarageGrade},
+    task3: {createCounter, repeatFunction},
+    task4: {calculateFactorial, power},
+    task5: {lazyMap, fibonacciGenerator}
+}
