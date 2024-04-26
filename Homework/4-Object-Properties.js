@@ -52,15 +52,10 @@ person.updateInfo = function (infoObj) {
 
 Object.defineProperty(person, "adress", {
     value: {},
+    writable: true,
     enumerable: false,
     configurable: false
 })
-
-const infoToUpdate = {
-    firstName: "Jane",
-    age: 32,
-    address: "123 Main Street"
-};
 
 /*Task 2: Object Property Enumeration and Deletion
 Create a new object called product with the following properties and values:
@@ -132,7 +127,7 @@ Implement a method called transfer on the bankAccount object that takes two bank
 The method should transfer the specified amount from the current account to the target account. Ensure that the balance and formattedBalance properties of both accounts are updated correctly.
 */
 
-bankAccount = {
+const bankAccount = {
     _balance: 1000,
 
 
@@ -147,14 +142,13 @@ bankAccount = {
     },
 
 
-    transfer(otherBankAccount, amount) {
-        if (this._balance < amount) throw new Error("Balance is not enough");
+    transfer(bankAccount1, bankAccount2, amount) {
+        if (bankAccount1.getBalance < amount) throw new Error("Balance is not enough");
         if (typeof amount !== "number") throw new Error("Amount must be a number");
-        if (!otherBankAccount.hasOwnProperty("_balance")) throw new Error("The object input is not a bank account");
+        if (!bankAccount2.hasOwnProperty("_balance")) throw new Error("The object input is not a bank account");
 
-        this._balance -= amount;
-        let newBalance = otherBankAccount.getBalance + amount;
-        otherBankAccount.balance = newBalance;
+        bankAccount1.balance = bankAccount1.getBalance - amount;
+        bankAccount2.balance = bankAccount2.getBalance + amount;
     }
 }
 
@@ -240,13 +234,7 @@ const observeObject = (obj, cb) => {
     });
 };
 
-const cbFunction = (action, propName) => {
-    console.log(`The action was ${action}, for ${propName} property`)
-}
 const proxiedObj = observeObject(person, cbFunction);
-
-proxiedObj.fitstName = "Juan";
-console.log(proxiedObj.fitstName);
 
 /*Task 6: Object Deep Cloning
 Implement a function called deepCloneObject that takes an object as an argument and returns a deep copy of the object. 
@@ -271,27 +259,13 @@ const deepCloneObject = (obj, clones = []) => {
     return clone;
 };
 
-const inputObject = {
-    name: "John",
-    age: 30,
-    address: {
-        city: "New York",
-        postalCode: "10001"
-    },
-    hobbies: ["reading", "cooking", "traveling"],
-    friends: [
-        { name: "Alice", age: 28 },
-        { name: "Bob", age: 32 }
-    ]
-};
-
 /*Task 7: Object Property Validation
 Implement a function called validateObject that takes an object and a validation schema as arguments. 
 The schema should define the required properties, their types, and any additional validation rules. 
 The function should return true if the object matches the schema, and false otherwise. 
 You can choose any schema you want. */
 
-const objSechmasValidation = (obj, schema) => {
+const validateObject = (obj, schema) => {
 
     if (typeof obj !== 'object' || obj === null || typeof schema !== 'object' || schema === null) return new Error("Inputs must be objects")
 
@@ -343,17 +317,12 @@ const schema = {
     required: ['firstName', 'lastName', 'age']
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+module.exports = {
+   task1: {person},
+   task2: {product, getTotalPrice, deleteNonConfigurable},
+   task3: {bankAccount},
+   task4: {createImmutableObject, immutablePerson},
+   task5: {observeObject, proxiedObj},
+   task6: {deepCloneObject},
+   task7: {validateObject, schema}
+}
