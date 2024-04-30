@@ -37,7 +37,7 @@ console.log(uniqueObjectsByName);
 Create a function called chunkArray that takes an array and a chunk size as arguments. 
 The chunkArray function should divide the array into smaller arrays, each containing elements of the specified chunk size. 
 The function should return an array of arrays.
-Optimize the chunkArray function to minimize memory usage while chunking the array.*/
+Optimize the chunkArray function to minimize memory usage while chunking the array*/
 
 const chunkArray = (array, chunk) =>{
     if(!Array.isArray(array)) return new Error ("First input must be an array");
