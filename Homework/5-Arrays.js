@@ -4,19 +4,33 @@ The customFilterUnique function should filter the array using the callback funct
 The resulting array should contain only unique elements based on the callback's logic.
 Use the customFilterUnique function to filter an array of objects based on a specific property and return only unique objects.*/
 
-const customFilterUnique = (array, cb) =>{
+const customFilterUnique = (array, cb) => {
+    if (!Array.isArray(array)) return new Error("First input must be an array");
 
     const filteredArray = [];
 
-    array.forEach(element => {
-        if(cb(element)){
-            if(!filteredArray.includes(element)){
+    array.forEach((element, index, arr) => {
+        if (cb(element, index, arr)) {
+            if (!filteredArray.some(item => cb(item, index, arr))) {
                 filteredArray.push(element);
             }
         }
     });
+
     return filteredArray;
-}
+};
+
+const arrayOfObjects = [
+    { id: 1, name: 'John' },
+    { id: 2, name: 'Jane' },
+    { id: 3, name: 'John' },
+    { id: 4, name: 'Alice' }
+];
+const isUniqueByName = (obj, index, array) => {
+    return array.findIndex(item => item.name === obj.name) === index;
+};
+const uniqueObjectsByName = customFilterUnique(arrayOfObjects, isUniqueByName);
+console.log(uniqueObjectsByName);
 
 
 /*Task 2: Array Chunking
@@ -70,12 +84,12 @@ const getArrayIntersection = (array, array2) => {
 
 const getArrayUnion = (array, array2) => {
     if(!Array.isArray(array) || !Array.isArray(array2)) return new Error ("Inputs must be an array");
-
-    const union = [];
-    array.forEach((element)=>{
-        if(!array2.includes(element) && !union.includes(element)) union.push(element);
+    let result = [];
+    const union = [...array, ...array2];
+    union.forEach((element)=>{
+        if(!result.includes(element)) result.push(element);
     })
-    return union;
+    return result;
 }
 
 /*Task 5: Array Performance Analysis
@@ -83,15 +97,47 @@ Implement a function called measureArrayPerformance that takes a function and an
 The measureArrayPerformance function should execute the provided function with the given array as input and measure the execution time.
 Use the measureArrayPerformance function to compare the performance of built-in array methods (map, filter, reduce, etc.) against your custom array manipulation functions.*/
 
-const measureArrayPerformance = (fn, array) =>{
-
-
+const measureArrayPerformance = (fn, array) => {
+    const startTime = performance.now();
+    fn(array);
+    const endTime = performance.now();
+    console.log(`Execution time: ${endTime - startTime} milliseconds.`);
 }
 
+
+const array1 = Array.from({ length: 10000 }, (_, index) => index + 1); // Array from 1 to 10000
+const array2 = Array.from({ length: 10000 }, (_, index) => index + 5001); // Array from 5001 to 15000
+const sampleArray = Array.from({ length: 100000 }, (_, index) => index + 1); // Array from 1 to 100000
+
+console.log(".filter:")
+measureArrayPerformance((array) => array.filter(item => item > 50000), sampleArray); 
+
+console.log("customFilterUnique:")
+measureArrayPerformance((array) => customFilterUnique(array, item => item > 50000), sampleArray);
+
+console.log(".map:")
+measureArrayPerformance((array) => array.map(item => item * 2), sampleArray);
+
+console.log("chunkArray:")
+measureArrayPerformance(chunkArray, sampleArray, 100);
+
+console.log(".reduce:")
+measureArrayPerformance((array) => array.reduce((acc, curr) => acc + curr), sampleArray); 
+
+console.log("customShuffle:")
+measureArrayPerformance(customShuffle, sampleArray); 
+
+console.log("getArrayIntersection:");
+measureArrayPerformance(getArrayIntersection, [array1, array2]);
+
+console.log("getArrayUnion")
+measureArrayPerformance(getArrayUnion, array1, array2);
+
+
 module.exports = {
-    task1:{customFilterUnique},
+    task1:{customFilterUnique, arrayOfObjects, isUniqueByName},
     task2:{chunkArray},
     task3:{customShuffle},
     task4:{getArrayIntersection, getArrayUnion},
-    task5:{}
+    task5:{measureArrayPerformance}
 }
