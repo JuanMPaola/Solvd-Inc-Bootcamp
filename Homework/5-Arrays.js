@@ -7,14 +7,16 @@ Use the customFilterUnique function to filter an array of objects based on a spe
 const customFilterUnique = (array, cb) => {
     if (!Array.isArray(array)) return new Error("First input must be an array");
 
-    const filteredArray = [];
+    const nameCounts = {};
 
-    array.forEach((element, index, arr) => {
-        if (cb(element, index, arr)) {
-            if (!filteredArray.some(item => cb(item, index, arr))) {
-                filteredArray.push(element);
-            }
-        }
+    array.forEach(element => {
+        const name = cb(element);
+        nameCounts[name] = (nameCounts[name] || 0) + 1;
+    });
+
+    const filteredArray = array.filter(element => {
+        const name = cb(element);
+        return nameCounts[name] === 1;
     });
 
     return filteredArray;
@@ -26,10 +28,10 @@ const arrayOfObjects = [
     { id: 3, name: 'John' },
     { id: 4, name: 'Alice' }
 ];
-const isUniqueByName = (obj, index, array) => {
-    return array.findIndex(item => item.name === obj.name) === index;
-};
-const uniqueObjectsByName = customFilterUnique(arrayOfObjects, isUniqueByName);
+
+const getName = obj => obj.name;
+
+const uniqueObjectsByName = customFilterUnique(arrayOfObjects, getName);
 console.log(uniqueObjectsByName);
 
 
@@ -60,12 +62,12 @@ Implement the customShuffle function using an efficient shuffling algorithm to a
 
 const customShuffle = (array) => {
     if(!Array.isArray(array)) return new Error ("Input must be an array");
-
+    const newArray = array.slice();
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
     }
-    return array;
+    return newArray;
 }
 
 /*Task 4: Array Intersection and Union
@@ -108,7 +110,7 @@ const measureArrayPerformance = (fn, array) => {
 const array1 = Array.from({ length: 10000 }, (_, index) => index + 1); // Array from 1 to 10000
 const array2 = Array.from({ length: 10000 }, (_, index) => index + 5001); // Array from 5001 to 15000
 const sampleArray = Array.from({ length: 100000 }, (_, index) => index + 1); // Array from 1 to 100000
-
+/* 
 console.log(".filter:")
 measureArrayPerformance((array) => array.filter(item => item > 50000), sampleArray); 
 
@@ -133,9 +135,9 @@ measureArrayPerformance(getArrayIntersection, [array1, array2]);
 console.log("getArrayUnion")
 measureArrayPerformance(getArrayUnion, array1, array2);
 
-
+ */
 module.exports = {
-    task1:{customFilterUnique, arrayOfObjects, isUniqueByName},
+    task1:{customFilterUnique, arrayOfObjects},
     task2:{chunkArray},
     task3:{customShuffle},
     task4:{getArrayIntersection, getArrayUnion},
