@@ -110,7 +110,7 @@ const measureArrayPerformance = (fn, array) => {
 const array1 = Array.from({ length: 10000 }, (_, index) => index + 1); // Array from 1 to 10000
 const array2 = Array.from({ length: 10000 }, (_, index) => index + 5001); // Array from 5001 to 15000
 const sampleArray = Array.from({ length: 100000 }, (_, index) => index + 1); // Array from 1 to 100000
-/* 
+
 console.log(".filter:")
 measureArrayPerformance((array) => array.filter(item => item > 50000), sampleArray); 
 
@@ -135,7 +135,7 @@ measureArrayPerformance(getArrayIntersection, [array1, array2]);
 console.log("getArrayUnion")
 measureArrayPerformance(getArrayUnion, array1, array2);
 
- */
+
 module.exports = {
     task1:{customFilterUnique, arrayOfObjects},
     task2:{chunkArray},
