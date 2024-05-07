@@ -113,19 +113,12 @@ Instructions:
 1. Test your `debounce` function by using it to debounce an input event listener. Ensure that the provided function is only called once after the user stops typing for the specified delay time.
 
 Example
+
 */
 function debouncedSearch(query) {
-	// Perform search operation with the query
+    // Perform search operation with the query
 	console.log("Searching for:", query);
 }
-
-const debouncedSearchHandler = debounce(debouncedSearch, 300);
-
-const inputElement = document.getElementById("search-input");
-inputElement.addEventListener("input", event => {
-	debouncedSearchHandler(event.target.value);
-});
-
 
 function debounce(func, delay) {
     let timeoutId;
@@ -137,6 +130,15 @@ function debounce(func, delay) {
         }, delay);
     };
 }
+const debouncedSearchHandler = debounce(debouncedSearch, 300);
+
+const inputElement = document.getElementById("search-input");
+inputElement.addEventListener("input", event => {
+    debouncedSearchHandler(event.target.value);
+});
+
+
+
 
 
 /*
@@ -157,13 +159,9 @@ Instructions:
 Example*/
 
 function onScroll(event) {
-	// Handle scroll event
+    // Handle scroll event
 	console.log("Scroll event:", event);
 }
-
-const throttledScrollHandler = throttle(onScroll, 1000);
-
-window.addEventListener("scroll", throttledScrollHandler);
 
 const throttle = (func, interval) => {
     let lastExecution = 0;
@@ -176,6 +174,11 @@ const throttle = (func, interval) => {
         }
     };
 };
+
+const throttledScrollHandler = throttle(onScroll, 1000);
+
+window.addEventListener("scroll", throttledScrollHandler);
+
 /*
 Task 6: Currying Function Implementation
 Your task is to implement a currying function that converts a given function into a curried version. Currying is a technique in which a function that takes multiple arguments is transformed into a sequence of functions, each taking a single argument.
@@ -193,13 +196,6 @@ Example
 function multiply(a, b, c) {
 	return a * b * c;
 }
-
-const curriedMultiply = curry(multiply, 3);
-
-const step1 = curriedMultiply(2); // Returns a curried function
-const step2 = step1(3); // Returns a curried function
-const result = step2(4); // Returns the final result: 2 * 3 * 4 = 24
-
 const curry = (func, arity) => {
     return function curried(...args) {
         if (args.length >= arity) {
@@ -211,6 +207,13 @@ const curry = (func, arity) => {
         }
     };
 };
+
+const curriedMultiply = curry(multiply, 3);
+
+const step1 = curriedMultiply(2); // Returns a curried function
+const step2 = step1(3); // Returns a curried function
+const result = step2(4); // Returns the final result: 2 * 3 * 4 = 24
+
 
 
 console.log("Result:", result); // Expected: 24

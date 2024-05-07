@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debounce and Throttle Test</title>
+</head>
+<body>
+
+<h1>Debounce Test</h1>
+<input type="text" id="search-input" placeholder="Type here">
+
+<script>
+    function debouncedSearch(query) {
+        console.log("Searching for:", query);
+    }
+
+    function debounce(func, delay) {
+        let timeoutId;
+
+        return function(...args) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func(...args);
+            }, delay);
+        };
+    }
+
+    const debouncedSearchHandler = debounce(debouncedSearch, 300);
+
+    const inputElement = document.getElementById("search-input");
+    inputElement.addEventListener("input", event => {
+        debouncedSearchHandler(event.target.value);
+    });
+</script>
+
+<hr>
+
+<h1>Throttle Test</h1>
+<div style="height: 2000px;">Scroll down to test throttle</div>
+
+<script>
+    function onScroll(event) {
+        console.log("Scroll event:", event);
+    }
+
+    const throttle = (func, interval) => {
+        let lastExecution = 0;
+
+        return function(...args) {
+            const now = Date.now();
+            if (now - lastExecution >= interval) {
+                func(...args);
+                lastExecution = now;
+            }
+        };
+    };
+
+    const throttledScrollHandler = throttle(onScroll, 1000);
+
+    window.addEventListener("scroll", throttledScrollHandler);
+</script>
+
+</body>
+</html>
