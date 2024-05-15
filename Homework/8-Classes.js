@@ -9,61 +9,148 @@ Part 1: Class Design
 1. Book Class: Create a class called `Book` to represent individual books. Each book should have properties like title, author, ISBN, price, and availability.
 2. User Class: Create a class called `User` to represent users of the bookstore. Users should have properties like name, email, and a unique user ID.
 3. Cart Class: Design a class called `Cart` to simulate a shopping cart. It should have methods to add books, remove books, and calculate the total price of the books in the cart.
-4. Order Class: Create an `Order` class to represent a user's order. It should include information about the user, the books ordered, and the total price.*/
+4. Order Class: Create an `Order` class to represent a user's order. It should include information about the user, the books ordered, and the total price.
 
+Part 2: Implementation
+
+1. Create Objects: Instantiate multiple `Book` objects, representing different books available in the bookstore. Also, create a few `User` objects.
+2. Add Books to Cart: Simulate users adding books to their cart by creating instances of the `Cart` class and using its methods.
+3. Place Orders: Implement the process of placing an order. Users should be able to create instances of the `Order` class, specifying the books they want to purchase.
+
+Part 3: Demonstration
+
+1. Create a Scenario: Design a scenario where users browse books, add them to their carts, and place orders. Simulate interactions between users, carts, and orders.
+2. Interaction: Demonstrate how objects of different classes interact with each other. For example, a user interacts with a cart, and a cart interacts with orders.
+3. Polymorphism: Utilize polymorphism by treating different types of books (e.g., fiction, non-fiction) uniformly when users add them to the cart.
+
+Part 4: Documentation
+
+1. Documentation: Provide clear and concise comments and documentation for your code. Explain the purpose of each class, method, and property. 
+Describe the interaction between different objects and how encapsulation is maintained.
+
+Submission
+
+Submit your JavaScript program along with detailed documentation and comments that explain your code. Ensure that your code is well-structured and adheres to best practices in object-oriented programming.
+
+Bonus (Optional)
+
+Implement additional features such as searching for books, applying discounts, handling payments, or integrating a database to store book and user information.*/
+
+
+// Class representing individual books in the bookstore. I also add stock and type properties.
 class Book {
   constructor(title, author, isbn, price, availability, stock, type) {
-    this.title = title,
-      this.author = author,
-      this.isbn = isbn,
-      this.price = price,
-      this.availability = availability,
-      this.stock = stock,
-      this.type = type
+    this.title = title;
+    this.author = author;
+    this.isbn = isbn;
+    this.price = price;
+    this._availability = availability;
+    this._stock = stock;
+    this.type = type
   }
+
+  // Getters and Setters for stock, and availability to mantain encapsulation
+  get availability() {
+    return this._availability;
+  }
+  set availability(value) {
+    this._availability = value;
+  }
+  get stock() {
+    return this._stock;
+  }
+  set stock(value) {
+    this._stock = value;
+  }
+
+  //Method to reduce the stock of the books that are ordered
+  reduceStock() {
+    this.stock -= 1;
+  }
+
 }
 
+// Class representing users of the bookstore. I also add the Cart properite that associate directly the Cart class with each User, and a orders array that saves al the oredes of the user.
 class User {
   constructor(name, email, userId) {
-    this.name = name,
-    this.email = email,
-    this.userId = userId,
-    this.cart = new Cart(this),
+    this.name = name;
+    this.email = email;
+    this.userId = userId;
+    this.cart = new Cart();
     this.orders = []
   }
+  // Method to show or return the orders of the user
+  getOrders() {
+    return this.orders;
+  }
 
-  // Method to add books to the cart
+  // Method to add books to the cart. It checks if the book is availabe. If it is add it to the cart. If not, logs an message.
   addToCart(...books) {
-    if(books.availability === false){
-      return console.log(`${books.name} is not avalible`)
-    }else
-    this.cart.addBooks(...books);
+    books.forEach(book => {
+      if (book.availability) {
+        this.cart.addBooks(book);
+      } else {
+        console.log(`${book.title} is not available.`);
+      }
+    });
+
+
   }
 
-  // Method to place an order
+  // This function places an order based on the books in the cart. It checks each book's availability (again), and if available, reduces its stock and adds it to the order. 
+  // If any book is not available, it logs them and doesn't place the order. After placing the order successfully, the cart is cleared.
   placeOrder() {
-    const order = new Order(this, this.cart.books);
-    this.orders.push(order);
-    this.cart.clearCart(); 
-    return order;
+    let notAvailableBooks = [];
+    let availableBooks = [];
+
+    this.cart.books.forEach(book => {
+      if (book.availability) {
+        book.reduceStock();
+        availableBooks.push(book);
+      } else {
+        notAvailableBooks.push(book);
+      }
+    });
+
+    if (notAvailableBooks.length > 0) {
+      console.log("The following books are not available and cannot be ordered:");
+      notAvailableBooks.forEach(book => console.log(book.title));
+    }
+
+    if (availableBooks.length > 0) {
+      const order = new Order(this.userId, this.name, this.email, availableBooks, new Date());
+      this.orders.push(order);
+      this.cart.clearCart();
+      console.log("Order placed successfully.");
+      return order;
+    } else {
+      console.log("No books are available for ordering.");
+    }
   }
-  //make a method that checks if the books ara avalible, if they are, stock = stock -1, if not console.log(book.name is not avalibe) => cart.books.filter((books) books.name != bookname)
+
+  // Method to show the books currently in the cart
+  showCart() {
+    this.cart.showBooks();
+  }
 }
 
+
+// Class representing the shopping cart of a user
 class Cart {
-  constructor(user) {
-    this.user = user,
+  constructor() {
     this.books = []
   }
 
   // Method to add books to the cart
-  addBooks(...books) {
-    this.books = [...this.books, ...books]
+  addBooks(book) {
+    this.books = [...this.books, book]
   }
 
   // Method to remove books from the cart
   removeBooks(...booksToRemove) {
-    this.books = this.books.filter(book => !booksToRemove.includes(book));
+    this.books = this.books.filter(book => {
+      !booksToRemove.includes(book)
+    });
   }
 
   // Method to clear the cart
@@ -75,12 +162,22 @@ class Cart {
   calculateTotalPrice() {
     return this.books.reduce((total, book) => total + book.price, 0);
   }
+
+  // Method to show the books currently in the cart
+  showBooks() {
+    console.log("Books in Cart:");
+    this.books.forEach(book => console.log(book.title));
+  }
 }
 
+// Class representing an order placed by a user. I also added a date propertie.
 class Order {
-  constructor(user, books) {
-    this.user = user,
-    this.books = books
+  constructor(userId, userName, userEmail, books, date) {
+    this.userId = userId;
+    this.userName = userName;
+    this.userEmail = userEmail;
+    this.books = books;
+    this.date = date || new Date(); // Default to the current date if not provided
     this.totalPrice = this.calculateTotalPrice();
   }
 
@@ -90,48 +187,34 @@ class Order {
   }
 }
 
-
-/*
-Part 2: Implementation
-
-1. Create Objects: Instantiate multiple `Book` objects, representing different books available in the bookstore. Also, create a few `User` objects.
-2. Add Books to Cart: Simulate users adding books to their cart by creating instances of the `Cart` class and using its methods.
-3. Place Orders: Implement the process of placing an order. Users should be able to create instances of the `Order` class, specifying the books they want to purchase.*/
-
 // Instantiate objects
-const book1 = new Book("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 15.99, true);
-const book2 = new Book("To Kill a Mockingbird", "Harper Lee", "9780061120084", 12.50, false);
-const book3 = new Book("1984", "George Orwell", "9780451524935", 10.99, true);
+const book1 = new Book("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 15.99, true, 10, "Fiction");
+const book2 = new Book("To Kill a Mockingbird", "Harper Lee", "9780061120084", 12.50, false, 5, "Fiction");
+const book3 = new Book("1984", "George Orwell", "9780451524935", 10.99, true, 20, "Science Fiction");
 
 const user1 = new User("John Doe", "john@example.com", "user123");
 const user2 = new User("Jane Smith", "jane@example.com", "user456");
 
-// Interaction: User adds books to the cart
-user1.addToCart(book1, book2);
+// Interaction: User 1 adds books to the cart
+user1.addToCart(book1);
+user1.addToCart(book3);
 
-// Interaction: User places an order
+// Interaction: User 1 removes a book from the cart
+//user1.cart.removeBooks(book1);
+
+// Show user 1's cart before placing an order
+console.log("User 1 Cart before placing an order:");
+console.log(user1.cart)
+user1.showCart();
+
+// Interaction: User 1 places an order
 const order1 = user1.placeOrder();
 
-/*
-Part 3: Demonstration
+// Show user 1's cart after placing an order
+console.log("User 1 Cart after placing an order:");
+user1.showCart();
 
-1. Create a Scenario: Design a scenario where users browse books, add them to their carts, and place orders. Simulate interactions between users, carts, and orders.
-2. Interaction: Demonstrate how objects of different classes interact with each other. For example, a user interacts with a cart, and a cart interacts with orders.
-3. Polymorphism: Utilize polymorphism by treating different types of books (e.g., fiction, non-fiction) uniformly when users add them to the cart.
-*/
+// Display user 1 orders
+console.log("User 1 Orders:", user1.getOrders());
 
 
-/*
-Part 4: Documentation
-
-1. Documentation: Provide clear and concise comments and documentation for your code. Explain the purpose of each class, method, and property. 
-Describe the interaction between different objects and how encapsulation is maintained.
-
-Submission
-
-Submit your JavaScript program along with detailed documentation and comments that explain your code. Ensure that your code is well-structured and adheres to best practices in object-oriented programming.
-*/
-
-/*Bonus (Optional)
-
-Implement additional features such as searching for books, applying discounts, handling payments, or integrating a database to store book and user information.*/
