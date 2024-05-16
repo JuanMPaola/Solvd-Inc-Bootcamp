@@ -189,7 +189,7 @@ class Admin extends User {
     super(name, email, userId);
   }
 
-  // Admins can remove books from users carts Implementing polymorphism.
+  // Admins can remove books from users carts implementing polymorphism.
   removeBooks(user, ...booksToRemove){
     user.removeBooks(...booksToRemove);
   }
@@ -289,5 +289,6 @@ module.exports = {
   Book,
   User,
   Cart,
+  Admin,
   Order
 };
