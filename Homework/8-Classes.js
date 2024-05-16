@@ -40,22 +40,49 @@ Implement additional features such as searching for books, applying discounts, h
 // Class representing individual books in the bookstore. I also add stock and type properties.
 class Book {
   constructor(title, author, isbn, price, availability, stock, type) {
-    this.title = title;
-    this.author = author;
-    this.isbn = isbn;
-    this.price = price;
-    this._availability = availability;
+    this._title = title;
+    this._author = author;
+    this._isbn = isbn;
+    this._price = price;
     this._stock = stock;
-    this.type = type
+    this._availability = availability;
+    this._type = type;
   }
 
-  // Getters and Setters for stock, and availability to mantain encapsulation
-  get availability() {
-    return this._availability;
+  // To mantain encapsulation:
+  // Getters and Setters for title
+  get title() {
+    return this._title;
   }
-  set availability(value) {
-    this._availability = value;
+  set title(value) {
+    this._title = value;
   }
+
+  // Getters and Setters for author
+  get author() {
+    return this._author;
+  }
+  set author(value) {
+    this._author = value;
+  }
+
+  // Getters and Setters for ISBN
+  get isbn() {
+    return this._isbn;
+  }
+  set isbn(value) {
+    this._isbn = value;
+  }
+
+  // Getters and Setters for price
+  get price() {
+    return this._price;
+  }
+  set price(value) {
+    this._price = value;
+  }
+
+  // Getters and Setters for stock
   get stock() {
     return this._stock;
   }
@@ -63,9 +90,26 @@ class Book {
     this._stock = value;
   }
 
-  //Method to reduce the stock of the books that are ordered
+  // Getters and Setters for availability
+  get availability() {
+    return this._availability;
+  }
+  set availability(value) {
+    this._availability = value;
+  }
+
+  // Getters and Setters for type
+  get type() {
+    return this._type;
+  }
+  set type(value) {
+    this._type = value;
+  }
+
+  //Method to reduce the stock of the books that are ordered. If there is no more stock, availability become false.
   reduceStock() {
     this.stock -= 1;
+    if(this.stock = 0) this.availability = false;
   }
 
 }
@@ -132,8 +176,25 @@ class User {
   showCart() {
     this.cart.showBooks();
   }
+
+  removeBooks(...booksToRemove) {
+    this.cart.removeBooks(...booksToRemove);
+  }
 }
 
+//Admin class use Inheritance and Polymorphism
+class Admin extends User {
+  constructor(name, email, userId) {
+    // Call the constructor of the User class using super()
+    super(name, email, userId);
+  }
+
+  // Admins can remove books from users carts Implementing polymorphism.
+  removeBooks(user, ...booksToRemove){
+    user.removeBooks(...booksToRemove);
+  }
+
+}
 
 // Class representing the shopping cart of a user
 class Cart {
@@ -195,26 +256,38 @@ const book3 = new Book("1984", "George Orwell", "9780451524935", 10.99, true, 20
 const user1 = new User("John Doe", "john@example.com", "user123");
 const user2 = new User("Jane Smith", "jane@example.com", "user456");
 
-// Interaction: User 1 adds books to the cart
+// Interaction: User 1 adds books to the cart and place order
 user1.addToCart(book1);
 user1.addToCart(book3);
 
-// Interaction: User 1 removes a book from the cart
-//user1.cart.removeBooks(book1);
-
-// Show user 1's cart before placing an order
 console.log("User 1 Cart before placing an order:");
-console.log(user1.cart)
+//Befor ordering the order
 user1.showCart();
 
 // Interaction: User 1 places an order
 const order1 = user1.placeOrder();
 
-// Show user 1's cart after placing an order
 console.log("User 1 Cart after placing an order:");
+// After ordering
 user1.showCart();
 
 // Display user 1 orders
 console.log("User 1 Orders:", user1.getOrders());
 
 
+
+// Interaction: Admin interaction with users cart
+const admin = new Admin("Admin", "admin@example.com", "admin123");
+
+
+// Interaction: Admin removes books from User 1's cart
+user1.addToCart(book1);
+admin.removeBooks(user1, book1);
+user1.showCart();
+
+module.exports = {
+  Book,
+  User,
+  Cart,
+  Order
+};
