@@ -4,7 +4,7 @@ class Queue {
         this.array = [];
     }
     peek() {
-        return this.array.length;
+        return this.array[0];
     }
     enqueue(element) {
         this.array.push(element);
@@ -26,9 +26,8 @@ queue.enqueue(30);
 
 // Dequeue elements from the queue
 console.log(queue.dequeue()); // Output: 10
-console.log(queue.dequeue()); // Output: 20
 
-// Check the size of the queue
-console.log(queue.peek()); // Output: 1
+// Check the last enqueue element
+console.log(queue.peek()); // Output: 20
 
 module.exports = Queue;

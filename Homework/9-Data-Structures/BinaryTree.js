@@ -33,6 +33,17 @@ class BinaryTree {
         }
     }
 
+    // This function traverse the three in order (recursively) and print the values
+    printInorder(node){
+        if(node == null) return;
+
+        this.printInorder(node.left);
+
+        console.log(node.value);
+
+        this.printInorder(node.right);
+    }
+
     // Function to check if the tree is a binary search tree (BST)
     isBST() {
         return this._isBSTHelper(this, -Infinity, Infinity);
@@ -71,5 +82,8 @@ console.log(tree.contains(20)); // Output: false
 
 // Check if the tree is a Binary Search Tree (BST)
 console.log(tree.isBST()); // Output: true
+
+// Print the tree in-order
+tree.printInorder(tree); // Output: 3 5 7 10 13 15 18
 
 module.exports = BinaryTree;

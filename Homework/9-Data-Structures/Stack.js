@@ -39,6 +39,10 @@ class Stack {
         return popped;
     }
 
+    peek(){
+        return this.stack[this.stack.length-1]
+    }
+
     getMax() {
         if (this.maxStack.length === 0) {
             return null;
@@ -68,6 +72,9 @@ stack.push(2);
 // Pop elements from the stack
 console.log(stack.pop()); // Output: 2
 console.log(stack.pop()); // Output: 8
+
+// Peek function
+console.log(stack.peek()) // Output 3
 
 // Get the current maximum and minimum in the stack
 console.log(stack.getMax()); // Output: 5
