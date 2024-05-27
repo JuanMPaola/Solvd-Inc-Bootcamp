@@ -44,37 +44,64 @@ class CustomHashTable {
     this.table = new Array(size);
   }
 
-  hash(key) {
-    // Implement your custom hash function...
+  // Custom hash function to convert a string to a hash code
+  _hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash << 5) - hash + key.charCodeAt(i);
+      hash |= 0; // Convert to 32bit integer
+    }
+    return Math.abs(hash) % this.size;
   }
 
   // Method to insert key-value pair into the hash table
   insert(key, value) {
-    const index = key % this.size;
-    if(this.table[index] === undefined){
+    const index = this._hash(key);
+    if (this.table[index] === undefined) {
       this.table[index] = new LinkedList();
     }
     // Insert an object with both key and value into the linked list
-    this.table[index].insert({key: key , value: value});
+    this.table[index].insert({ key, value });
   }
 
   // Method to retrieve a value by key from the hash table
   get(key) {
-    const index = key % this.size;
-    if(this.table[index] === undefined){
+    const index = this._hash(key);
+    if (this.table[index] === undefined) {
       return undefined;
     }
     // Search for the node with the matching key
-    const  node = this.table[index].search(node => node.key === key);
+    const node = this.table[index].search(node => node.key === key);
     return node ? node.value : undefined; // Return the value if found, otherwise undefined
   }
 
+  // Method to delete a key-value pair from the hash table
   delete(key) {
-    // Implement key deletion...
+    const index = this._hash(key);
+    if (this.table[index] !== undefined) {
+      // Remove the node with the matching key
+      this.table[index].remove(node => node.key === key);
+    }
   }
 }
 
-// Create an instance of CustomHashTable and demonstrate its usage...
+// Create an instance of CustomHashTable and demonstrate its usage
+const hashTable = new CustomHashTable(10);
+
+// Insert elements
+hashTable.insert('name', 'Alice');
+hashTable.insert('age', 25);
+hashTable.insert('occupation', 'Engineer');
+
+// Retrieve elements
+console.log(hashTable.get('name')); // Output: Alice
+console.log(hashTable.get('age')); // Output: 25
+console.log(hashTable.get('occupation')); // Output: Engineer
+
+// Delete an element
+hashTable.delete('age');
+console.log(hashTable.get('age')); // Output: undefined
+
 /* 
 Bonus Challenge
 
