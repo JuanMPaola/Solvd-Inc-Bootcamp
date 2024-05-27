@@ -107,3 +107,5 @@ Bonus Challenge
 
 For an extra challenge, consider implementing additional features for your hash table, such as resizing the table dynamically 
 to maintain an efficient load factor, or implementing a method to iterate through all key-value pairs in the hash table. */
+
+module.exports = CustomHashTable;
