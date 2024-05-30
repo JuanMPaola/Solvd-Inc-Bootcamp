@@ -103,9 +103,32 @@ hashTable.delete('age');
 console.log(hashTable.get('age')); // Output: undefined
 
 /* 
-Bonus Challenge
+Analisys:
+Hash functions are useful to store information in a more efficient way. This functions usually contain diferent parts like the table, where the data in key, value pairs is store,
+the hash function itself, and methods to insert and delete nodes. 
 
-For an extra challenge, consider implementing additional features for your hash table, such as resizing the table dynamically 
-to maintain an efficient load factor, or implementing a method to iterate through all key-value pairs in the hash table. */
+Table:
+In this case I decide to use an array that the size is defined during the initialization of the hash table on the constructor.
+he hash table is implemented as an array where each index can store a linked list of key-value pairs.
+
+Hash Function: 
+The hash function converts a string key into an integer index by processing each character in the string. 
+It shifts the hash left by 5 bits, subtracts the hash, and adds the Unicode value of the character. This process ensures a good distribution of keys. 
+The result is then taken modulo the size of the array to ensure it falls within the valid range of indices.
+
+Colicions:
+In practice "perefect hash functions" (return always unique ints) is not normaly used. In sted, use a hash function "not-perfect" and manege colicions.
+In this case, when a 2 diferents nodes are going to be store in the same elemnt of the array beacuse they have the same index, 
+the colicions are managed with a linked list, so, the element of the array would store more than one value. 
+This way you dont gonna need a big array to store a lot of values and still have an efficient memory management.
+
+Performance:
+In the case of the 3 methods of the class, for insertion, deletion, and searching the average of time complexity depends on how many collision happend during the insertion of the key value pairs.
+With only a few collisions, the avarage time complexity is O(1), and in the worst case, O(n) beacuse it may require searching throught the linked list to find or insert the element.
+
+Conclusion:
+The custom hash table implementation provides efficient insertion, retrieval, and deletion operations with time complexity of O(1). 
+The use of a linked list for collision resolution ensures effective memory usage and handles collisions well.
+*/
 
 module.exports = CustomHashTable;
