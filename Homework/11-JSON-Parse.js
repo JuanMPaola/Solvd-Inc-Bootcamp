@@ -165,6 +165,7 @@ For parseArray function, is more simple beacuse you only need to parse values no
 
 // REFLECT:
 /* 
-Making this parse function guive me a clear perspective of how data is manage between Json and objects files. The first challenging part for me was to get the correct reg exp, hopefully I found one that works perfectly after a few tries. 
+Making this parse function guive me a clear perspective of how data is parse between Json type files and objects. 
+The first challenging part for me was to get the correct reg exp, hopefully I found one that works perfectly after makien few tries and a bit of searching. 
 Also a challengin part was the nested object and arrays. I had to create a particular function for those two types, something I wasn´t expected to do. In the end works well :).
 */
